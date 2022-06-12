@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kaufen</title>
+</head>
+<body>
+  <a href="/">
+    <h1>Supershop</h1>
+  </a>
+  <h2>Bestätige dass du kein Bot bist</h2>
+  <form method="post" action="/purchaseConfirmation">
+    <div>
+      <%- captcha %>
+    </div>
+    <div>
+      <label for="captchaInput">Captcha:</label>
+      <input type="text" name="captcha">
+    </div>
+    <button type="submit">Bestätigen</button>
+  </form>
+</body>
+</html>
