@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/styles.css" />
+    <title>Kaufen</title>
+  </head>
+  <body>
+    <header>
+      <a href="/insecure/">
+        <h1>PlayStation Store</h1>
+      </a>
+    </header>
+    <div class="container">
+      <form method="post" action="/insecure/purchaseConfirmation">
+        <label for="fname">Vorname:</label><br />
+        <input type="text" id="fname" name="fname" value="" /><br />
+        <label for="lname">Nachname:</label><br />
+        <input type="text" id="lname" name="lname" value="" /><br />
+        <label for="adress">Adresse:</label><br />
+        <input type="text" id="adress" name="adress" value="" /><br />
+        <label for="plz">PLZ:</label><br />
+        <input type="text" id="plz" name="plz" value="" /><br /><br />
+        <div class="centerButtonContainer">
+          <button type="submit">Bestätigen</button>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>

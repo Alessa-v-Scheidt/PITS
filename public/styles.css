@@ -105,3 +105,8 @@ label {
 .captcha > p {
     margin: 0;
 }
+
+.centerButtonContainer {
+    display: flex;
+    align-items: center;
+}
