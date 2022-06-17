@@ -17,7 +17,7 @@ const limiter = rateLimit({
 
 // Spezifischer:
 // app.use('/api/', limiter)
-app.use(limiter)
+app.use('/store/', limiter)
 
 /*
   Server Setup
@@ -32,10 +32,15 @@ app.use(express.urlencoded({extended: true}))
 app.set('view engine', 'ejs')
 
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname + '/public/index.html'))
+  res.redirect('/store/')
 })
 
-app.get('/purchaseForm', (req, res) => {
+app.get('/store/', (req, res) => {
+  res.sendFile(path.join(__dirname + '/view/index.html'))
+})
+
+
+app.get('/store/purchaseForm', (req, res) => {
   // neues Captcha wird generiert
   const captcha = svgCaptcha.create()
 
@@ -43,15 +48,15 @@ app.get('/purchaseForm', (req, res) => {
   req.session.captcha = captcha.text
 
   // Captcha-SVG wird im Template eingefügt
-  res.render(path.join(__dirname + '/public/purchaseForm'), { captcha: captcha.data})
+  res.render(path.join(__dirname + '/view/purchaseForm'), { captcha: captcha.data})
 })
 
-app.post('/purchaseConfirmation', (req, res) => {
+app.post('/store/purchaseConfirmation', (req, res) => {
   // Vergleich Daten von Server === Eingabe von Nutzer
   if(req.session.captcha === req.body.captcha){
-    res.send('Success')
+    res.sendFile(path.join(__dirname + '/view/success.html'))
   } else {
-    res.send('Denied!')
+    res.sendFile(path.join(__dirname + '/view/denied.html'))
   } 
 })
 
