@@ -2,6 +2,7 @@ const express = require('express')
 const rateLimit = require('express-rate-limit')
 const path = require('path')
 const session = require('express-session')
+const cookieParser = require('cookie-parser')
 const svgCaptcha = require('svg-captcha')
 const app = express()
 
@@ -22,27 +23,79 @@ app.use('/store/', limiter)
 /*
   Server Setup
 */
+// Session Middleware
 app.use(session({
   secret: 'keyboard cat',
 }))
+
+// Bodybarser Middlewares
 app.use(express.json())
-app.use(express.static('public'))
 app.use(express.urlencoded({ extended: true }))
 
+// Static Routes get served automatically
+app.use(express.static('public'))
+
+// Set EJS as view engine
 app.set('view engine', 'ejs')
+
+// Whitelist Middleware
+app.use((req, res, next) => {
+  const ip = req.socket.remoteAddress;
+
+  // Only allow whitelisted access
+  if (ip === '::1' || ip === '127.0.0.1') {
+    next();
+  } else {
+    // Deny Access
+    console.log(`Unauthorized Access by IP: ${ip}`)
+    res.status(403).send('Not whitelisted')
+  }
+})
+
+// Cookie Authentication Middleware
+app.use(cookieParser());
+app.use('/secure/', (req, res, next) => {
+  // If cookie is set...
+  if (req.cookies.userToken) {
+    // ... use the regular routes
+    next();
+  } else {
+    // ... else redirect the user back home
+    res.redirect('/')
+  }
+})
+
+
+/*
+  Home
+*/
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname + '/view/home.html'))
+})
+
+
+/* 
+  Cookie Subroutes
+*/
+
+app.get('/getCookie', (req, res) => {
+  res.cookie('userToken', 'amazingTokenContent')
+  res.redirect('/')
+})
+
+app.get('/invalidateCookie', (req, res) => {
+  res.clearCookie('userToken')
+  res.redirect('/')
+})
 
 /*
   Secure Routes
 */
 
-app.get('/', (req, res) => {
-  res.redirect('/secure/')
-})
-
 app.get('/secure/', (req, res) => {
   res.sendFile(path.join(__dirname + '/view/secureIndex.html'))
 })
-
 
 app.get('/secure/purchaseForm', (req, res) => {
   // neues Captcha wird generiert
@@ -65,8 +118,9 @@ app.post('/secure/purchaseConfirmation', (req, res) => {
 })
 
 /*
-  Unsecured Routes
+  Insecure Routes
 */
+
 app.get('/insecure/', (req, res) => {
   res.sendFile(path.join(__dirname + '/view/insecureIndex.html'))
 })
@@ -81,6 +135,10 @@ app.post('/insecure/purchaseConfirmation', (req, res) => {
   res.sendFile(path.join(__dirname + '/view/insecureSuccess.html'))
 })
 
+
+/*
+  Start Server
+*/
 
 app.listen(3000, () => {
   console.log('Server is running on http://localhost:3000')
