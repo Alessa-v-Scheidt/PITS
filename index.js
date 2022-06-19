@@ -43,7 +43,7 @@ app.use((req, res, next) => {
   const ip = req.socket.remoteAddress;
 
   // Only allow whitelisted access
-  if (ip === '::1' || ip === '127.0.0.1') {
+  if (ip === '::1' || ip === '127.0.0.1' || ip === '::ffff:127.0.0.1') {
     next();
   } else {
     // Deny Access
