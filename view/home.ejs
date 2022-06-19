@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/styles.css" />
+    <title>Home</title>
+</head>
+
+<body>
+    <header>
+        <h2 style="font-size: 36px">Welcome</h2>
+    </header>
+    <div style="
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 3rem;
+      ">
+        <a style="padding-bottom: 1rem" href="/secure/">Secure</a>
+        <a style="padding-bottom: 1rem" href="/insecure/">Insecure</a>
+        <% if (cookie) { %>
+            <a style="padding-bottom: 2rem" href="/invalidateCookie">Invalidate Cookie</a>
+            <% } %>
+    </div>
+    <% if (!cookie) { %>
+    <form method="post" action="/getCookie">
+        <div class="captcha">
+            <p>Bitte lösen Sie das Captcha</p>
+            <%- captcha %>
+                <input type="text" name="captcha" />
+                <button type="submit">Get new Cookie</button>
+        </div>
+    </form>
+    <% } %>
+</body>
+
+</html>

@@ -71,17 +71,30 @@ app.use('/secure/', (req, res, next) => {
 */
 
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname + '/view/home.html'))
+  // neues Captcha wird generiert
+  const captcha = svgCaptcha.create()
+
+  // Captcha-Lösungstext wird in Session gespeichert
+  req.session.captcha = captcha.text
+
+  res.render(path.join(__dirname, '/view/home'), { captcha: captcha.data, cookie: req.cookies.userToken })
 })
+
+
 
 
 /* 
   Cookie Subroutes
 */
-
-app.get('/getCookie', (req, res) => {
-  res.cookie('userToken', 'amazingTokenContent')
-  res.redirect('/')
+app.post('/getCookie', (req, res) => {
+  // Vergleich Daten von Server === Eingabe von Nutzer
+  if (req.session.captcha === req.body.captcha) {
+    res.cookie('userToken', 'amazingTokenContent')
+    res.redirect('/')
+    // get
+  } else {
+    res.redirect('/')
+  }
 })
 
 app.get('/invalidateCookie', (req, res) => {
@@ -105,7 +118,7 @@ app.get('/secure/purchaseForm', (req, res) => {
   req.session.captcha = captcha.text
 
   // Captcha-SVG wird im Template eingefügt
-  res.render(path.join(__dirname + '/view/securePurchaseForm'), { captcha: captcha.data })
+  res.render(path.join(__dirname, '/view/securePurchaseForm'), { captcha: captcha.data })
 })
 
 app.post('/secure/purchaseConfirmation', (req, res) => {
